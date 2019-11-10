@@ -17,8 +17,13 @@ jobs:
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go }}
-      
+
+    - name: download dependencies
+      run: go mod download
+
+    - name: vet
+      run: go vet -trimpath ./...
+
     - name: test
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        go test -v -trimpath ./...
