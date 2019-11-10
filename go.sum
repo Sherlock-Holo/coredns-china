@@ -1,0 +1,4 @@
+github.com/Sherlock-Holo/errors v0.9.3 h1:MRRc2etd5q/+r33V3phuBEQBmZqEY6JiSX51a2Ry6xw=
+github.com/Sherlock-Holo/errors v0.9.3/go.mod h1:mt1IevQ//4aU2Lou9z0C9/9R04lpACFUJ6X1y7JMnSw=
+golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898 h1:/atklqdjdhuosWIl6AIbOeHJjicWYPqR9bpxqxYG2pA=
+golang.org/x/xerrors v0.0.0-20191011141410-1b5146add898/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
