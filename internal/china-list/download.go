@@ -1,18 +1,15 @@
 package china_list
 
 import (
-	"bytes"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 
 	"github.com/Sherlock-Holo/errors"
 )
 
-const (
-	repoName    = "dnsmasq-china-list"
-	repoAddress = "https://github.com/felixonmars/dnsmasq-china-list.git"
-)
+const repoAddress = "https://github.com/felixonmars/dnsmasq-china-list.git"
 
 func lookupGitCmd() (path string, err error) {
 	path, err = exec.LookPath("git")
@@ -23,18 +20,26 @@ func lookupGitCmd() (path string, err error) {
 }
 
 func DownloadData() (dirPath string, err error) {
+	log.Println("use git to download list")
+
 	gitPath, err := lookupGitCmd()
 	if err != nil {
 		return "", errors.WithMessage(err, "lookup git cmd failed")
 	}
 
-	dirPath = filepath.Join(os.TempDir(), repoName)
+	dirPath, err = ioutil.TempDir(os.TempDir(), "")
+	if err != nil {
+		return "", errors.Wrap(err, "create temp git directory failed")
+	}
 
-	cmd := exec.Command(gitPath, "clone", "--depth", "1", repoAddress, dirPath)
-	errBuf := new(bytes.Buffer)
-	cmd.Stderr = errBuf
+	cmd := &exec.Cmd{
+		Path:   gitPath,
+		Args:   append([]string{gitPath}, "clone", "--depth", "1", repoAddress, dirPath),
+		Stderr: os.Stderr,
+	}
+
 	if err := cmd.Run(); err != nil {
-		return "", errors.Wrapf(err, "download list failed, error output %s", errBuf.String())
+		return "", errors.Wrap(err, "download list failed")
 	}
 
 	return
