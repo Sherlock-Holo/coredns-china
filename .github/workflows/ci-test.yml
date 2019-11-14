@@ -27,3 +27,20 @@ jobs:
     - name: test
       run: |
         go test -race -v ./...
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: install go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: download dependencies
+        run: go mod download
+
+      - name: build coredns
+        run: ./build.sh
