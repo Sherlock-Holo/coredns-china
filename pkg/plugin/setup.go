@@ -42,15 +42,23 @@ func parse(c *caddy.Controller) (cfg plugin.Config, err error) {
 
 		for c.NextBlock() {
 			switch c.Val() {
-			case "china":
+			case "list-file":
 				args := c.RemainingArgs()
-				if len(args) != 2 {
+				if len(args) != 1 {
 					err = c.ArgErr()
 					return
 				}
 
 				chinaListPath = args[0]
-				cfg.ChinaDns = args[1]
+
+			case "china":
+				args := c.RemainingArgs()
+				if len(args) != 1 {
+					err = c.ArgErr()
+					return
+				}
+
+				cfg.ChinaDns = args[0]
 
 			case "foreign":
 				args := c.RemainingArgs()
