@@ -19,18 +19,25 @@ func Test_tree_add(testT *testing.T) {
 		expectTree *tree
 	}{
 		{
-			name:   "add [com, baidu, www]",
-			fields: fields{root: &node{value: "com"}},
-			args:   args{words: []string{"com", "baidu", "www"}},
+			name: "add [com, baidu, www]",
+
+			fields: fields{root: &node{
+				value:    "com",
+				children: make(map[string]*node),
+			}},
+
+			args: args{words: []string{"com", "baidu", "www"}},
+
 			expectTree: &tree{
 				root: &node{
 					value: "com",
-					children: []*node{
-						{
+					children: map[string]*node{
+						"baidu": {
 							value: "baidu",
-							children: []*node{
-								{
-									value: "www",
+							children: map[string]*node{
+								"www": {
+									value:    "www",
+									children: make(map[string]*node),
 								},
 							},
 						},
@@ -57,13 +64,11 @@ func Test_tree_add(testT *testing.T) {
 func Test_tree_get(t1 *testing.T) {
 	root := &node{
 		value: "com",
-		children: []*node{
-			{
+		children: map[string]*node{
+			"baidu": {
 				value: "baidu",
-				children: []*node{
-					{
-						value: "www",
-					},
+				children: map[string]*node{
+					"www": {value: "www"},
 				},
 			},
 		},

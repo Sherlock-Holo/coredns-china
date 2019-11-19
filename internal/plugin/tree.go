@@ -6,7 +6,7 @@ import (
 
 type node struct {
 	value    string
-	children []*node
+	children map[string]*node
 }
 
 type tree struct {
@@ -28,9 +28,10 @@ WORDS:
 		}
 		child := &node{
 			value:    word,
-			children: nil,
+			children: make(map[string]*node),
 		}
-		root.children = append(root.children, child)
+
+		root.children[word] = child
 		root = child
 	}
 }
@@ -41,15 +42,13 @@ func (t *tree) get(words []string) (match string) {
 	// ignore eg: com, cn, org, so that we can make the loop clearly
 	words = words[1:]
 
-WORDS:
 	for _, word := range words {
-		for _, child := range node.children {
-			if child.value == word {
-				matchWords = append(matchWords, word)
-				node = child
-				continue WORDS
-			}
+		if child, ok := node.children[word]; ok {
+			matchWords = append(matchWords, word)
+			node = child
+			continue
 		}
+
 		break
 	}
 

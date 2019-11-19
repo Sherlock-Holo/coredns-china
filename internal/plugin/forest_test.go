@@ -26,10 +26,15 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -50,10 +55,15 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -74,12 +84,18 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
+							children: map[string]*node{
+								"baidu": {
 									value: "baidu",
-									children: []*node{
-										{value: "www"},
-										{value: "abc"},
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+										"abc": {
+											value:    "abc",
+											children: make(map[string]*node),
+										},
 									},
 								},
 							},
@@ -101,14 +117,22 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
+							children: map[string]*node{
+								"baidu": {
 									value: "baidu",
-									children: []*node{
-										{value: "www"},
-										{
-											value:    "abc",
-											children: []*node{{value: "www"}},
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+										"abc": {
+											value: "abc",
+											children: map[string]*node{
+												"www": {
+													value:    "www",
+													children: make(map[string]*node),
+												},
+											},
 										},
 									},
 								},
@@ -131,10 +155,15 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -142,10 +171,15 @@ func Test_forest_Add(t *testing.T) {
 					{
 						root: &node{
 							value: "cn",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -190,10 +224,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -211,10 +250,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -238,10 +282,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -259,10 +308,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -270,10 +324,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "cn",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -291,10 +350,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "com",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
@@ -302,10 +366,15 @@ func Test_forest_Get(t *testing.T) {
 					{
 						root: &node{
 							value: "cn",
-							children: []*node{
-								{
-									value:    "baidu",
-									children: []*node{{value: "www"}},
+							children: map[string]*node{
+								"baidu": {
+									value: "baidu",
+									children: map[string]*node{
+										"www": {
+											value:    "www",
+											children: make(map[string]*node),
+										},
+									},
 								},
 							},
 						},
