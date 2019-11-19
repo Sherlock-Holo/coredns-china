@@ -72,8 +72,7 @@ jobs:
           |
           export DOCKER_TAG=$(date +%Y%m%d)
           docker build . --tag coredns-china:$DOCKER_TAG
-          export IMAGE_ID=$(docker images -q coredns-china:$DOCKER_TAG | xargs)
-          docker export $IMAGE_ID -o coredns-china.tar
+          docker save coredns-china:$DOCKER_TAG -o coredns-china.tar
 
       - uses: actions/upload-artifact@master
         with:
