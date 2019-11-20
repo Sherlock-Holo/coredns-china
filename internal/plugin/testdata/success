@@ -1,0 +1,5 @@
+china-list {
+    list-file testdata/list.txt
+    china 119.29.29.29:53
+    foreign 8.8.8.8:53
+}

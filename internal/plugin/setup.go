@@ -4,14 +4,13 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/Sherlock-Holo/coredns-china/internal/plugin"
 	"github.com/Sherlock-Holo/errors"
 	"github.com/caddyserver/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
 	corednsPlugin "github.com/coredns/coredns/plugin"
 )
 
-func setup(c *caddy.Controller) error {
+func Setup(c *caddy.Controller) error {
 	cfg, err := parse(c)
 	if err != nil {
 		return errors.WithMessage(err, "parse config failed")
@@ -20,14 +19,14 @@ func setup(c *caddy.Controller) error {
 	coreCfg := dnsserver.GetConfig(c)
 
 	coreCfg.AddPlugin(func(corednsPlugin.Handler) corednsPlugin.Handler {
-		return plugin.NewHandler(cfg)
+		return NewHandler(cfg)
 	})
 
 	return nil
 }
 
-func parse(c *caddy.Controller) (cfg plugin.Config, err error) {
-	cfg = plugin.NewConfig()
+func parse(c *caddy.Controller) (cfg Config, err error) {
+	cfg = NewConfig()
 
 	var (
 		chinaListPath string
@@ -36,7 +35,7 @@ func parse(c *caddy.Controller) (cfg plugin.Config, err error) {
 
 	for c.Next() {
 		if pluginCount > 0 {
-			return plugin.Config{}, corednsPlugin.ErrOnce
+			return Config{}, corednsPlugin.ErrOnce
 		}
 		pluginCount++
 
