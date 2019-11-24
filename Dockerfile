@@ -6,4 +6,4 @@ ADD coredns /
 
 RUN chmod +x /coredns
 
-RUN /coredns -conf /Corefile
+CMD /coredns -conf /Corefile
