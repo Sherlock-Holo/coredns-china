@@ -29,6 +29,9 @@ jobs:
           go test -race -v ./...
 
   build:
+    strategy:
+      matrix:
+        go: ['1.14.x']
     needs: test
 
     runs-on: ubuntu-latest
@@ -39,7 +42,7 @@ jobs:
       - name: install go
         uses: actions/setup-go@v1
         with:
-          go-version: 1.13.x
+          go-version: ${{ matrix.go }}
 
       - name: download dependencies
         run: go mod download
