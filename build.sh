@@ -16,4 +16,6 @@ go mod tidy
 
 go mod download
 
+go mod tidy
+
 make
