@@ -4,9 +4,9 @@ import (
 	"context"
 	"net"
 
-	"github.com/Sherlock-Holo/errors"
 	"github.com/coredns/coredns/request"
 	"github.com/miekg/dns"
+	errors "golang.org/x/xerrors"
 )
 
 type Handler struct {
@@ -47,17 +47,17 @@ func (h *Handler) ServeDNS(ctx context.Context, rw dns.ResponseWriter, msg *dns.
 
 	conn, err := h.Dial(dnsAddress)
 	if err != nil {
-		return dns.RcodeServerFailure, errors.Wrapf(err, "dial dns %s failed", dnsAddress)
+		return dns.RcodeServerFailure, errors.Errorf("dial dns %s failed: %w", dnsAddress, err)
 	}
 
 	if deadline, ok := ctx.Deadline(); ok {
 		if err := conn.SetDeadline(deadline); err != nil {
-			return dns.RcodeServerFailure, errors.Wrapf(err, "set deadline %s failed", deadline)
+			return dns.RcodeServerFailure, errors.Errorf("set deadline %s failed: %w", deadline, err)
 		}
 	}
 
 	if err := conn.WriteMsg(msg); err != nil {
-		return dns.RcodeServerFailure, errors.Wrap(err, "write msg failed")
+		return dns.RcodeServerFailure, errors.Errorf("write msg failed: %w", err)
 	}
 
 	replyMsg, err := conn.ReadMsg()
@@ -66,13 +66,13 @@ func (h *Handler) ServeDNS(ctx context.Context, rw dns.ResponseWriter, msg *dns.
 	switch {
 	case errors.As(err, &netError):
 		if netError.Timeout() {
-			return dns.RcodeBadTime, errors.Wrap(err, "read reply msg timeout")
+			return dns.RcodeBadTime, errors.Errorf("read reply msg timeout: %w", err)
 		}
 
 		fallthrough
 
 	default:
-		return dns.RcodeServerFailure, errors.Wrap(err, "read reply msg failed")
+		return dns.RcodeServerFailure, errors.Errorf("read reply msg failed: %w", err)
 
 	case err == nil:
 	}
@@ -81,13 +81,13 @@ func (h *Handler) ServeDNS(ctx context.Context, rw dns.ResponseWriter, msg *dns.
 	switch {
 	case errors.As(err, &netError):
 		if netError.Timeout() {
-			return dns.RcodeBadTime, errors.Wrap(err, "write reply msg timeout")
+			return dns.RcodeBadTime, errors.Errorf("write reply msg timeout: %w", err)
 		}
 
 		fallthrough
 
 	default:
-		return dns.RcodeServerFailure, errors.Wrap(err, "write reply msg failed")
+		return dns.RcodeServerFailure, errors.Errorf("write reply msg failed: %w", err)
 
 	case err == nil:
 	}

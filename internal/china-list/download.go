@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/Sherlock-Holo/errors"
+	errors "golang.org/x/xerrors"
 )
 
 const repoAddress = "https://github.com/felixonmars/dnsmasq-china-list.git"
@@ -14,7 +14,7 @@ const repoAddress = "https://github.com/felixonmars/dnsmasq-china-list.git"
 func lookupGitCmd() (path string, err error) {
 	path, err = exec.LookPath("git")
 	if err != nil {
-		err = errors.WithStack(err)
+		err = errors.Errorf("lookup git path failed: %w", err)
 	}
 	return
 }
@@ -24,12 +24,12 @@ func DownloadData() (dirPath string, err error) {
 
 	gitPath, err := lookupGitCmd()
 	if err != nil {
-		return "", errors.WithMessage(err, "lookup git cmd failed")
+		return "", errors.Errorf("lookup git cmd failed: %w", err)
 	}
 
 	dirPath, err = ioutil.TempDir(os.TempDir(), "")
 	if err != nil {
-		return "", errors.Wrap(err, "create temp git directory failed")
+		return "", errors.Errorf("create temp git directory failed: %w", err)
 	}
 
 	cmd := &exec.Cmd{
@@ -39,7 +39,7 @@ func DownloadData() (dirPath string, err error) {
 	}
 
 	if err := cmd.Run(); err != nil {
-		return "", errors.Wrap(err, "download list failed")
+		return "", errors.Errorf("download list failed: %w", err)
 	}
 
 	return

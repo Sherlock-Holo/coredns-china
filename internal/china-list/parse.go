@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Sherlock-Holo/errors"
+	errors "golang.org/x/xerrors"
 )
 
 const (
@@ -26,7 +26,7 @@ type Domain string
 func Parse(path string) ([]Domain, error) {
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, errors.Wrapf(err, "parse file %s failed", path)
+		return nil, errors.Errorf("parse file %s failed: %w", path, err)
 	}
 	defer func() {
 		_ = file.Close()
@@ -58,7 +58,7 @@ func Parse(path string) ([]Domain, error) {
 
 	err = scanner.Err()
 	if err != nil {
-		return nil, errors.Wrapf(err, "scan file %s failed", path)
+		return nil, errors.Errorf("scan file %s failed: %w", path, err)
 	}
 
 	return domains, nil

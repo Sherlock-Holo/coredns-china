@@ -2,18 +2,20 @@ package plugin
 
 import (
 	"bufio"
+	"log"
 	"os"
+	"time"
 
-	"github.com/Sherlock-Holo/errors"
 	"github.com/caddyserver/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
 	corednsPlugin "github.com/coredns/coredns/plugin"
+	errors "golang.org/x/xerrors"
 )
 
 func Setup(c *caddy.Controller) error {
 	cfg, err := parse(c)
 	if err != nil {
-		return errors.WithMessage(err, "parse config failed")
+		return errors.Errorf("parse config failed: %w", err)
 	}
 
 	coreCfg := dnsserver.GetConfig(c)
@@ -73,12 +75,16 @@ func parse(c *caddy.Controller) (cfg Config, err error) {
 
 	file, err := os.Open(chinaListPath)
 	if err != nil {
-		err = errors.Wrapf(err, "open china-list file %s failed", chinaListPath)
+		err = errors.Errorf("open china-list file %s failed: %w", chinaListPath, err)
 		return
 	}
 	defer func() {
 		_ = file.Close()
 	}()
+
+	log.Println("start to parse china-list")
+
+	start := time.Now()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -94,10 +100,14 @@ func parse(c *caddy.Controller) (cfg Config, err error) {
 		}
 	}
 
+	parseUsedTime := time.Since(start)
+
 	if scanner.Err() != nil {
-		err = errors.Wrap(err, "scan china-list failed")
+		err = errors.Errorf("scan china-list failed: %w", err)
 		return
 	}
+
+	log.Printf("parse done, usage time %v", parseUsedTime)
 
 	return
 }

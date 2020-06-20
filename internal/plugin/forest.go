@@ -18,12 +18,7 @@ func (f *forest) Add(domain string) {
 		}
 	}
 
-	t := &tree{
-		root: &node{
-			value:    words[0],
-			children: make(map[string]*node),
-		},
-	}
+	t := newTree(words[0])
 	f.trees = append(f.trees, t)
 
 	t.add(words)

@@ -7,33 +7,33 @@ import (
 	"sort"
 	"strings"
 
-	china_list "github.com/Sherlock-Holo/coredns-china/internal/china-list"
-	"github.com/Sherlock-Holo/errors"
+	chinalist "github.com/Sherlock-Holo/coredns-china/internal/china-list"
+	errors "golang.org/x/xerrors"
 )
 
 func Run(output string) error {
-	dataPath, err := china_list.DownloadData()
+	dataPath, err := chinalist.DownloadData()
 	if err != nil {
-		return errors.WithMessage(err, "download data failed")
+		return errors.Errorf("download data failed: %w", err)
 	}
 
 	defer func() {
 		_ = os.RemoveAll(dataPath)
 	}()
 
-	var domains []china_list.Domain
+	var domains []chinalist.Domain
 
-	for _, fileName := range china_list.DataFileNames {
-		subDomains, err := china_list.Parse(filepath.Join(dataPath, fileName))
+	for _, fileName := range chinalist.DataFileNames {
+		subDomains, err := chinalist.Parse(filepath.Join(dataPath, fileName))
 		if err != nil {
-			return errors.WithMessagef(err, "parse file %s failed", fileName)
+			return errors.Errorf("parse file %s failed: %w", fileName, err)
 		}
 
 		domains = append(domains, subDomains...)
 	}
 
 	// dedup
-	m := make(map[china_list.Domain]struct{}, len(domains))
+	m := make(map[chinalist.Domain]struct{}, len(domains))
 	for _, domain := range domains {
 		m[domain] = struct{}{}
 	}
@@ -54,14 +54,14 @@ func Run(output string) error {
 
 	file, err := os.OpenFile(output, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
-		return errors.Wrapf(err, "create file %s failed", output)
+		return errors.Errorf("create file %s failed: %w", output, err)
 	}
 	defer func() {
 		_ = file.Close()
 	}()
 
 	if _, err := io.WriteString(file, sb.String()); err != nil {
-		return errors.Wrap(err, "write domains failed")
+		return errors.Errorf("write domains failed: %w", err)
 	}
 
 	return nil

@@ -9,48 +9,61 @@ type node struct {
 	children map[string]*node
 }
 
-type tree struct {
-	root *node
-}
+func (n *node) add(words []string) {
+	if len(words) == 0 {
+		return
+	}
 
-func (t *tree) add(words []string) {
-	root := t.root
-	// ignore eg: com, cn, org, so that we can make the loop clearly
-	words = words[1:]
+	word := words[0]
 
-WORDS:
-	for _, word := range words {
-		for _, child := range root.children {
-			if child.value == word {
-				root = child
-				continue WORDS
-			}
-		}
-		child := &node{
+	child := n.children[word]
+	if child == nil {
+		n.children[word] = &node{
 			value:    word,
 			children: make(map[string]*node),
 		}
 
-		root.children[word] = child
-		root = child
+		child = n.children[word]
 	}
+
+	child.add(words[1:])
+}
+
+func (n *node) get(words []string) []string {
+	if len(words) == 0 {
+		return []string{n.value}
+	}
+
+	if child, ok := n.children[words[0]]; ok {
+		return append(child.get(words[1:]), n.value)
+	}
+
+	return []string{n.value}
+}
+
+type tree struct {
+	root *node
+}
+
+func newTree(rootWord string) *tree {
+	return &tree{root: &node{
+		value:    rootWord,
+		children: make(map[string]*node),
+	}}
+}
+
+func (t *tree) add(words []string) {
+	words = words[1:]
+
+	t.root.add(words)
 }
 
 func (t *tree) get(words []string) (match string) {
-	node := t.root
-	matchWords := []string{words[0]}
-	// ignore eg: com, cn, org, so that we can make the loop clearly
 	words = words[1:]
 
-	for _, word := range words {
-		if child, ok := node.children[word]; ok {
-			matchWords = append(matchWords, word)
-			node = child
-			continue
-		}
-
-		break
+	if matchWords := t.root.get(words); len(matchWords) > 0 {
+		return strings.Join(matchWords, ".")
 	}
 
-	return strings.Join(reverse(matchWords), ".")
+	return ""
 }
